@@ -5,4 +5,9 @@ Overview
 --------
 
 This is set of codes to improve my programming skills.
+
 I added source of codes when I bring it from other open source community or web and so on.
+
+When you have any questions, please [email](jwchoi.do@gmail.com) or visit my [blog](cantom.tistory.com).
+
+Thank you.
