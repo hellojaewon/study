@@ -810,6 +810,7 @@ cret:
 	mov	(sp)+,r5
 	rts	pc
 
+/ _u points to user structure of currently running process
 .globl	_u
 _u	= 140000
 usize	= 16.
