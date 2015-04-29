@@ -24,6 +24,10 @@ struct	proc
 	int	p_wchan;	/* event process is awaiting */
 	int	*p_textp;	/* pointer to text structure */
 } proc[NPROC];
+// NPROC is defined in /usr/sys/param.h
+// It means the maximum number of processes in the system.
+// Currently, the value is 50. proc[0] is for the system process
+// and never swapped out.
 
 /* stat codes */
 #define	SSLEEP	1		/* sleeping on high priority */
