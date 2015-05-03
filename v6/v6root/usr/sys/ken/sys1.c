@@ -333,6 +333,10 @@ fork()
 {
 	register struct proc *p1, *p2;
 
+    // finds the empty proc element for new process.
+    // p1 points proc structure of parent.
+    // p2 will point proc structure of child if empty proc
+    // element is found.
 	p1 = u.u_procp;
 	for(p2 = &proc[0]; p2 < &proc[NPROC]; p2++)
 		if(p2->p_stat == NULL)
@@ -341,8 +345,12 @@ fork()
 	goto out;
 
 found:
+    // true means child process.
+    // false means parent process.
 	if(newproc()) {
+        // sets the parent's process id to child process's R0.
 		u.u_ar0[R0] = p1->p_pid;
+        // initializes the CPU ticks child process used.
 		u.u_cstime[0] = 0;
 		u.u_cstime[1] = 0;
 		u.u_stime = 0;
@@ -351,9 +359,16 @@ found:
 		u.u_utime = 0;
 		return;
 	}
+    // sets the child's process id to parent process's R0.
+    // parent user process that called fork will receive this as return value.
 	u.u_ar0[R0] = p2->p_pid;
 
 out:
+    // advances program counter of user process.
+    // Therefore, only child process executes unconditional br instruction.
+    // PDP-11/40 uses 16bits(2bytes) as 1 word and the memory is addresses
+    // 8bits(1byte). To skip next n instruction(s), we have to add n * bytes
+    // consisting word to the current program counter.
 	u.u_ar0[R7] =+ 2;
 }
 
