@@ -364,9 +364,9 @@ found:
 	u.u_ar0[R0] = p2->p_pid;
 
 out:
-    // advances program counter of user process.
+    // moves program counter of parent user process.
     // Therefore, only child process executes unconditional br instruction.
-    // PDP-11/40 uses 16bits(2bytes) as 1 word and the memory is addresses
+    // PDP-11/40 uses 16bits(2bytes) as 1 word and the memory is addressed
     // 8bits(1byte). To skip next n instruction(s), we have to add n * bytes
     // consisting word to the current program counter.
 	u.u_ar0[R7] =+ 2;
