@@ -1,6 +1,6 @@
 # UNIX V6
 
-UNIX V6 was the first version of the Unix operating System. It was released in May 1975 and targetted DEC PDP-11 family of minicomputers.
+UNIX V6 was the first version of the Unix operating System. It was released in May 1975 and targeted DEC PDP-11 family of minicomputers.
 
 # PDP-11/40
 
