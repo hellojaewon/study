@@ -263,10 +263,12 @@ swaper:
  */
 swtch()
 {
+    // static variable p points to the last process that swtch selected.
 	static struct proc *p;
 	register i, n;
 	register struct proc *rp;
 
+    // if this is the first time switch called, then p points to the system process.
 	if(p == NULL)
 		p = &proc[0];
 	/*
@@ -276,12 +278,23 @@ swtch()
 	/*
 	 * Switch to scheduler's stack
 	 */
+    // proc[0] is system process that is used for scheduling. It is initialized
+    // when system boots.
 	retu(proc[0].p_addr);
 
 loop:
+    // runrun is set when there is a process that has the higher priority
+    // than currently running process.
 	runrun = 0;
+    // rp points to the current process so that the swtch selects a process
+    // that appears to after current process if there are more than two processes
+    // that have the highest priority.
 	rp = p;
+    // after finishing the loop below, p will point the highest-priority
+    // runnable process.
 	p = NULL;
+    // 128 is the lowest priority. All processes in the system can have
+    // priority with smaller than 128.
 	n = 128;
 	/*
 	 * Search for highest-priority runnable process
@@ -289,9 +302,12 @@ loop:
 	i = NPROC;
 	do {
 		rp++;
+        // for circular search
 		if(rp >= &proc[NPROC])
 			rp = &proc[0];
+        // finds runnable and in-memory process
 		if(rp->p_stat==SRUN && (rp->p_flag&SLOAD)!=0) {
+            // compares it with the candidate. if new one wins updates candidate.
 			if(rp->p_pri < n) {
 				p = rp;
 				n = rp->p_pri;
@@ -307,6 +323,7 @@ loop:
 		goto loop;
 	}
 	rp = p;
+    // curpri is global variable that represents the priority of running process.
 	curpri = n;
 	/*
 	 * Switch to stack of the new process and set up
@@ -324,6 +341,8 @@ loop:
 	 *
 	 * You are not expected to understand this.
 	 */
+    // TODO: what does it mean?
+    // when the swapped-out data comes back into the memory again?
 	if(rp->p_flag&SSWAP) {
 		rp->p_flag =& ~SSWAP;
 		aretu(u.u_ssav);
