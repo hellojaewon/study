@@ -268,7 +268,7 @@ swtch()
 	register i, n;
 	register struct proc *rp;
 
-    // if this is the first time switch called, then p points to the system process.
+    // if this is the first time switch is called, then p points to the system process.
 	if(p == NULL)
 		p = &proc[0];
 	/*
@@ -294,7 +294,7 @@ loop:
     // runnable process.
 	p = NULL;
     // 128 is the lowest priority. All processes in the system can have
-    // priority with smaller than 128.
+    // priority smaller than 128.
 	n = 128;
 	/*
 	 * Search for highest-priority runnable process
