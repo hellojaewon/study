@@ -94,9 +94,14 @@ setrun(p)
 
 	rp = p;
 	rp->p_wchan = 0;
+    // makes process runnable
 	rp->p_stat = SRUN;
+    // turns on runrun flag if the process that will be runnable has
+    // higher priority than current process. The priority of 'p' is
+    // set in the sleep function.
 	if(rp->p_pri < curpri)
 		runrun++;
+    // TODO: what does this mean?
 	if(runout != 0 && (rp->p_flag&SLOAD) == 0) {
 		runout = 0;
 		wakeup(&runout);
