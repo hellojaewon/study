@@ -119,12 +119,20 @@ setpri(up)
 	register *pp, p;
 
 	pp = up;
+    // calculates process priority. The priority is proportional to the
+    // cpu tick the process used.
 	p = (pp->p_cpu & 0377)/16;
 	p =+ PUSER + pp->p_nice;
+    // the maximum value of priority is 127.
 	if(p > 127)
 		p = 127;
+    // BUG!. It should be 'p < curpri' because the smaller value of priority
+    // means the higher priority. This had patched in UNIX V7.
+    // turns on reschedule flag if the calculated priority is higher than
+    // currently running priority.
 	if(p > curpri)
 		runrun++;
+    // sets the calculated priority.
 	pp->p_pri = p;
 }
 
