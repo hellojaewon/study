@@ -18,6 +18,19 @@ The PDP-11 is a series of 16-bit minicomputers sold by Digital Equipment Corpora
  - stack pointer
 - r7
  - program counter
+- PSW (Processor Status Word)
+  - PSW[15-14] : current mode(00:kernel, 11:user)
+  - PSW[13-12] : previous mode(00:kernel, 11:user)
+  - PSW[7-5] : processor priority(7-0)
+  - PSW[4] : trap bit
+  - PSW[3] : N.(negative).
+             Sets when the result of execution becomes negative.
+  - PSW[2] : Z.(zero).
+             Sets when the result of execution becomes zero.
+  - PSW[1] : V.(overflow)
+             Sets when the result of execution triggers overflow.
+  - PSW[0] : C.(carry)
+             Sets when the result of execution triggers carry.
 
 ## Instruction Set Architecture
 
