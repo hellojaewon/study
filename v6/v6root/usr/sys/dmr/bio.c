@@ -226,15 +226,19 @@ getblk(dev, blkno)
 
     loop:
 	if (dev < 0)
+        // b-list of bfreelist is for NODEV
 		dp = &bfreelist;
 	else {
 		dp = bdevsw[dev.d_major].d_tab;
 		if(dp == NULL)
 			panic("devtab");
+        // finds buffer from b-list
 		for (bp=dp->b_forw; bp != dp; bp = bp->b_forw) {
 			if (bp->b_blkno!=blkno || bp->b_dev!=dev)
 				continue;
 			spl6();
+            // if the buffer is already used,
+            // turns on WANTED flag and sleep.
 			if (bp->b_flags&B_BUSY) {
 				bp->b_flags =| B_WANTED;
 				sleep(bp, PRIBIO);
@@ -242,11 +246,13 @@ getblk(dev, blkno)
 				goto loop;
 			}
 			spl0();
+            // removes buffer from av-list and turns on BUSY flag.
 			notavail(bp);
 			return(bp);
 		}
 	}
 	spl6();
+    // if there is no buffer availble, turns on WANTED flag and sleep.
 	if (bfreelist.av_forw == &bfreelist) {
 		bfreelist.b_flags =| B_WANTED;
 		sleep(&bfreelist, PRIBIO);
@@ -254,19 +260,24 @@ getblk(dev, blkno)
 		goto loop;
 	}
 	spl0();
+    // gets a buffer from av-list of bfreelist.
 	notavail(bp = bfreelist.av_forw);
+    // if the buffer obtained was set DELWRI flag, writes it asynchronously.
 	if (bp->b_flags & B_DELWRI) {
 		bp->b_flags =| B_ASYNC;
 		bwrite(bp);
 		goto loop;
 	}
 	bp->b_flags = B_BUSY | B_RELOC;
+    // removes buffer from the b-list
 	bp->b_back->b_forw = bp->b_forw;
 	bp->b_forw->b_back = bp->b_back;
+    // inserts buffer into b-list of current device
 	bp->b_forw = dp->b_forw;
 	bp->b_back = dp;
 	dp->b_forw->b_back = bp;
 	dp->b_forw = bp;
+    // sets dev, blkno
 	bp->b_dev = dev;
 	bp->b_blkno = blkno;
 	return(bp);
