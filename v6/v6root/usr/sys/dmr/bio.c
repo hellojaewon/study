@@ -170,8 +170,12 @@ struct buf *bp;
 	register int sps;
 
 	rbp = bp;
+    // if there is a process that waits for this buffer to be availble,
+    // then wakes it up.
 	if (rbp->b_flags&B_WANTED)
 		wakeup(rbp);
+    // if there is a process that waits for free buffer to be available,
+    // then wakes it up.
 	if (bfreelist.b_flags&B_WANTED) {
 		bfreelist.b_flags =& ~B_WANTED;
 		wakeup(&bfreelist);
@@ -182,6 +186,7 @@ struct buf *bp;
 	sps = PS->integ;
 	spl6();
 	rbp->b_flags =& ~(B_WANTED|B_BUSY|B_ASYNC);
+    // inserts free buffer into the end of av-list of bfreelist
 	(*backp)->av_forw = rbp;
 	rbp->av_back = *backp;
 	*backp = rbp;
@@ -313,6 +318,7 @@ struct buf *bp;
 	rbp = bp;
 	sps = PS->integ;
 	spl6();
+    // removes buffer from av-list and turns on BUSY flag.
 	rbp->av_back->av_forw = rbp->av_forw;
 	rbp->av_forw->av_back = rbp->av_back;
 	rbp->b_flags =| B_BUSY;
