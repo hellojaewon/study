@@ -106,6 +106,8 @@ int *ip;
 
 	rip = ip;
 	m = mode;
+    // checks rights if file already exists.
+    // if user has no right to access to the file, u_error is set.
 	if(trf != 2) {
 		if(m&FREAD)
 			access(rip, IREAD);
@@ -124,6 +126,7 @@ int *ip;
 		goto out;
 	fp->f_flag = m&(FREAD|FWRITE);
 	fp->f_inode = rip;
+    // temporarily stores index of u_ofile to release when openi fails.
 	i = u.u_ar0[R0];
 	openi(rip, m&FWRITE);
 	if(u.u_error == 0)
