@@ -244,6 +244,7 @@ falloc()
 
 	if ((i = ufalloc()) < 0)
 		return(NULL);
+    // finds an 'empty' entry in file[]
 	for (fp = &file[0]; fp < &file[NFILE]; fp++)
 		if (fp->f_count==0) {
 			u.u_ofile[i] = fp;
