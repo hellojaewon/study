@@ -14,6 +14,8 @@ const int GROWING_FACTOR = 2;
 class DynamicArray {
 public:
     DynamicArray (int capacity = DEFAULT_CAPACITY);
+    ~DynamicArray () { delete[] m_arr;}
+
     int Get (int index);
     void Set (int index, int value);
     void PushBack (int value);
