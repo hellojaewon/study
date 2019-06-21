@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <cassert>
 
 using namespace std;
@@ -8,27 +8,19 @@ using namespace std;
 int subarraySum(vector<int>& nums, int k) {
     int sum = 0;
     vector<int> t(nums.size(), 0);
-    multimap<int,int> table;
+    unordered_map<int,int> table;
     for (int i = 0; i < nums.size(); i++) {
-        t[i] = nums[i] + sum;
-        sum = t[i];
-        table.insert(make_pair(t[i], i));
-    }
+        if (i == 0)
+            t[i] = nums[i];
+        else
+            t[i] = t[i-1] + nums[i];
 
-    sum = 0;
-    for (int i = 0; i < nums.size(); i++) {
         int v = t[i] - k;
         if (v == 0)
             sum++;
-
-        auto ranges = table.equal_range(v);
-        for (auto it = ranges.first; it != ranges.second; it++) {
-            if (it->second >= i)
-                continue;
-            sum++;
-        }
+        sum += table[v];
+        table[t[i]]++;
     }
-
     return sum;
 }
 
