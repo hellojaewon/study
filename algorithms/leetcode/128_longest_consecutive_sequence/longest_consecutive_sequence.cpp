@@ -1,28 +1,25 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <unordered_set>
 #include <cassert>
 
 using namespace std;
 
 int longestConsecutive(vector<int>& nums) {
-    sort(nums.begin(), nums.end());
-    vector<int> t(nums.size(), 1);
-    int max = 0;
-    for (int i = 0; i < nums.size(); i++) {
-        if (i == 0)
-            max = t[i];
-        else {
-            if (nums[i-1] == nums[i])
-                t[i] = t[i-1];
-            else if (nums[i-1] + 1 == nums[i]) {
-                t[i] = t[i-1] + 1;
-                if (t[i] > max)
-                    max = t[i];
-            }
-        }
+    unordered_set<int> s;
+    for (auto n : nums)
+        s.insert(n);
+
+    int result = 0;
+    for (auto n : nums) {
+        if (s.find(n-1) != s.end()) continue;
+        int longest = 0;
+        while (s.find(n++) != s.end())
+            longest++;
+        result = max(result, longest);
     }
-    return max;
+    return result;
 }
 
 int main () {
