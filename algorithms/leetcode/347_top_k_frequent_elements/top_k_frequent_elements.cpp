@@ -6,24 +6,26 @@
 
 using namespace std;
 
+bool compare (const pair<int,int> & lhs, const pair<int,int> & rhs) {
+    return lhs.second < rhs.second;
+}
+
 vector<int> topKFrequent(vector<int>& nums, int k) {
     unordered_map<int,int> m;
-    for (auto n : nums) {
-        auto found = m.find(n);
-        if (found == m.end())
-            m.insert(make_pair(n, 1));
-        else
-            found->second++;
+    for (auto n : nums) m[n]++;
+
+    vector<pair<int,int>> heap;
+    for (auto & p : m) {
+        heap.push_back(p);
+        push_heap(heap.begin(), heap.end(), compare);
     }
 
-    vector<pair<int,int>> pairs;
-    for (auto n : m)
-        pairs.push_back(n);
-    sort(pairs.begin(), pairs.end(), [](const pair<int,int> & lhs, const pair<int,int> & rhs) { return lhs.second > rhs.second; });
-
     vector<int> result;
-    for (int i = 0; i < k; i++)
-        result.push_back(pairs[i].first);
+    for (int i = 0; i < k; i++) {
+        result.push_back(heap.front().first);
+        pop_heap(heap.begin(), heap.end(), compare);
+        heap.pop_back();
+    }
 
     return result;
 }
